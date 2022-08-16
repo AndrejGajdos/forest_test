@@ -2,5 +2,5 @@
 
 app.js
 
-- `envSecret` use forest admin env secret
-- `authSecret` use forest admin auth secret
+- `FOREST_ENV_SECRET` use forest admin env secret
+- `FOREST_AUTH_SECRET` use forest admin auth secret
