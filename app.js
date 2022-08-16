@@ -4,25 +4,17 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const Sequelize = require("sequelize");
+const jwt = require("express-jwt");
 const sequelizeInstance = require("./models/index").sequelize;
 const forest = require("forest-express-sequelize");
 const cors = require("cors");
+
+console.log({ sequelizeInstance });
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 
 var app = express();
-
-forest
-  .init({
-    envSecret: "",
-    authSecret: "",
-    objectMapping: Sequelize,
-    connections: { default: sequelizeInstance },
-  })
-  .then((FAMiddleware) => {
-    app.use(FAMiddleware);
-  });
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -33,6 +25,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+
+let allowedOrigins = [/\.forestadmin\.com$/, /localhost:\d{4}$/];
+
+const ALLOWED_CORS = "http://localhost:3000,http://app.forestadmin.com";
+
+allowedOrigins = allowedOrigins.concat(ALLOWED_CORS.split(","));
 
 const corsConfig = {
   origin: [/\.forestadmin\.com$/, /localhost:\d{4}$/],
@@ -62,6 +60,28 @@ app.use(
 );
 
 app.use(cors(corsConfig));
+
+const FOREST_AUTH_SECRET = "";
+const FOREST_ENV_SECRET = "";
+
+app.use(
+  jwt({
+    secret: FOREST_AUTH_SECRET,
+    credentialsRequired: false,
+    algorithms: ["HS256"],
+  })
+);
+
+forest
+  .init({
+    envSecret: FOREST_ENV_SECRET,
+    authSecret: FOREST_AUTH_SECRET,
+    objectMapping: Sequelize,
+    connections: { default: sequelizeInstance },
+  })
+  .then((FAMiddleware) => {
+    app.use(FAMiddleware);
+  });
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
