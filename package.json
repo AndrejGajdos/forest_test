@@ -1,0 +1,20 @@
+{
+  "name": "forest-test",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "cors": "2.8.5",
+    "debug": "~2.6.9",
+    "express": "4.17.3",
+    "forest-express-sequelize": "8.5.11",
+    "http-errors": "~1.6.3",
+    "jade": "~1.11.0",
+    "morgan": "~1.9.1",
+    "mysql2": "2.3.3",
+    "sequelize": "6.21.3"
+  }
+}
